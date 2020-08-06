@@ -23,6 +23,7 @@ GET /api/quotes
 Requirements:
 - NodeJS
 - NPM
+- Docker (Optional)
 
 Run using NPM:
 ```bash
@@ -31,4 +32,13 @@ npm install
 
 # run app at localhost:8000
 npm start
+```
+
+Run using Docker:
+```bash
+# build image
+docker build -t pbgnz/random-quote-api .
+
+# run image
+docker run -p 8000:8000 -d pbgnz/url-shortener-microservice
 ```
