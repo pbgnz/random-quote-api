@@ -22,7 +22,7 @@ GET /api/quotes
 
 Pull the latest image from Dockerhub
 ```bash
-docker pull pbgnz/random-quote-api
+docker pull pbgnz/random-quote-api:v1.1.0
 ```
 
 ## Dev
