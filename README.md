@@ -24,6 +24,14 @@ Pull the latest image from Dockerhub
 ```bash
 docker pull pbgnz/random-quote-api:v1.1.0
 ```
+Run image
+```bash
+docker run -p 8000:8000 -d pbgnz/random-quote-api:v1.1.0
+```
+Fetch endpoint
+```bash
+GET http://localhost:8000/api/quotes
+```
 
 ## Dev
 
