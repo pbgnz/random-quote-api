@@ -18,6 +18,13 @@ GET /api/quotes
 }
 ```
 
+## Usage
+
+Pull the latest image from Dockerhub
+```bash
+docker pull pbgnz/random-quote-api
+```
+
 ## Dev
 
 Requirements:
@@ -40,5 +47,5 @@ Run using Docker:
 docker build -t pbgnz/random-quote-api .
 
 # run image
-docker run -p 8000:8000 -d pbgnz/url-shortener-microservice
+docker run -p 8000:8000 -d pbgnz/random-quote-api
 ```
