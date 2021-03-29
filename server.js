@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const app = express();
-const bodyParser = require('body-parser');
 const request = require('request');
 const cheerio = require('cheerio');
 
 const port = process.env.PORT || 8000;
 
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(router);
 
 router.get('/api/quotes', (req, res) => {
