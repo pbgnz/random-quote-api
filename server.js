@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const app = express();
+const path = require('path');
 const request = require('request');
 const cheerio = require('cheerio');
 
@@ -11,12 +12,16 @@ app.use(router);
 
 let identityMap = new Map();
 
+router.get('/', (req, res) => {
+    res.status(200).sendFile(path.join(__dirname + '/index.html'));
+});
+
 router.get('/api/quotes', (req, res) => {
     let pageNumber = Math.floor(Math.random() * 100) + 1;
 
     if (identityMap.has(pageNumber)) {
         const quotes = identityMap.get(pageNumber);
-        res.send({ quotes });
+        res.status(200).send({ quotes });
     } else {
         let quotes = [];
         request('https://www.goodreads.com/quotes?page=' + pageNumber, function (err, r, body) {
@@ -33,10 +38,14 @@ router.get('/api/quotes', (req, res) => {
                     quotes[index].author = $(this)[0].children[0].data.replace(/(\r\n|\n|\r| +(?= )|,)/gm, "");
                 });
                 identityMap.set(pageNumber, quotes);
-                res.send({ quotes });
+                res.status(200).send({ quotes });
             }
         });
     }
+});
+
+router.get('*', (req, res) => {
+    res.status(404).send({ error: "404 not found"});
 });
 
 app.listen(port);
