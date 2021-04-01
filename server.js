@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const app = express();
+const cors = require('cors')
 const path = require('path');
 const request = require('request');
 const cheerio = require('cheerio');
@@ -9,6 +10,7 @@ const port = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(router);
+app.use(cors());
 
 let identityMap = new Map();
 
