@@ -8,9 +8,14 @@ const cheerio = require('cheerio');
 
 const port = process.env.PORT || 8000;
 
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200,
+    methods: "GET"
+}
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(router);
-app.use(cors());
 
 let identityMap = new Map();
 
