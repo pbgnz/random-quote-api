@@ -50,10 +50,10 @@ Run using Dockerhub's image:
 
 ```bash
 # Pull the latest image from Dockerhub
-docker pull pbgnz/random-quote-api:v1.2.1
+docker pull pbgnz/random-quote-api:v1.4.1
 
 # Run image
-docker run -p 8000:8000 -d pbgnz/random-quote-api:v1.2.1
+docker run -p 8000:8000 -d pbgnz/random-quote-api:v1.4.1
 
 # Fetch endpoint
 GET http://localhost:8000/api/quotes

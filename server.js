@@ -9,7 +9,7 @@ const cheerio = require('cheerio');
 const port = process.env.PORT || 8000;
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: 'https://escobot.github.io/random-quote-machine/',
     optionsSuccessStatus: 200,
     methods: "GET"
 }
