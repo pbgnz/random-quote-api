@@ -66,7 +66,7 @@ Run using Docker-compose:
 version: '3'
 services:
   api:
-    image: 'pbgnz/random-quote-api:v1.2.1'
+    image: 'pbgnz/random-quote-api:v1.4.1'
     ports:
       - '8000:8000'
 ```
