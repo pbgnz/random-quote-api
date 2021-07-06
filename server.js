@@ -7,7 +7,7 @@ const request = require('request');
 const cheerio = require('cheerio');
 
 const corsOptions = {
-    origin: 'https://escobot.github.io/random-quote-machine/',
+    origin: 'https://escobot.github.io',
     optionsSuccessStatus: 200,
     methods: "GET"
 }
