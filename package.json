@@ -1,10 +1,12 @@
 {
   "name": "random-quote-api",
-  "version": "1.4.1",
+  "version": "1.5.1",
   "description": "get random quotes",
-  "main": "server.js",
+  "main": "start.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node start.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -21,5 +23,9 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6",
+    "supertest": "^6.1.3"
   }
 }

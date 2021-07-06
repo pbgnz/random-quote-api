@@ -6,8 +6,6 @@ const path = require('path');
 const request = require('request');
 const cheerio = require('cheerio');
 
-const port = process.env.PORT || 8000;
-
 const corsOptions = {
     origin: 'https://escobot.github.io/random-quote-machine/',
     optionsSuccessStatus: 200,
@@ -55,5 +53,4 @@ router.get('*', (req, res) => {
     res.status(404).send({ error: "404 not found"});
 });
 
-app.listen(port);
-console.log('Server is running on port ' + port);
+module.exports = app;
