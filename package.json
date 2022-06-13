@@ -22,6 +22,7 @@
     "cheerio": "^1.0.0-rc.10",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-rate-limit": "^6.4.0",
     "request": "^2.88.2"
   },
   "devDependencies": {

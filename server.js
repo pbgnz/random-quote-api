@@ -6,11 +6,19 @@ const path = require('path');
 const request = require('request');
 const cheerio = require('cheerio');
 
+// set up rate limiter: maximum of five requests per minute
+var rateLimit = require('express-rate-limit');
+var limiter = rateLimit({
+  windowMs: 1*60*1000, // 1 minute
+  max: 5
+});
+
 const corsOptions = {
     origin: 'https://escobot.github.io',
     optionsSuccessStatus: 200,
     methods: "GET"
 }
+app.use(limiter);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(router);
