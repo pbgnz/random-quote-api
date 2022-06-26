@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/pbgnz/random-quote-api#readme",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.10",
+    "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-rate-limit": "^6.4.0",
