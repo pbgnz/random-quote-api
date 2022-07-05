@@ -22,51 +22,58 @@ GET /api/quotes
 
 ## Dev
 
-Requirements:
+### Requirements:
 - NodeJS
 - NPM
 - Docker (Optional)
 - Docker compose (Optional)
 
-Run using NPM:
-```bash
-# install dependencies
-npm install
+### Run using NPM:  
 
-# run app at localhost:8000
+Install dependencies
+```bash
+npm install
+```
+Run app on localhost:8000
+```BASH
 npm start
 ```
 
-Run using Docker:
-```bash
-# build image
-docker build -t pbgnz/random-quote-api .
+### Run using Docker: 
 
-# run image
+Build image
+```bash
+docker build -t pbgnz/random-quote-api .
+```
+Run image
+```bash
 docker run -p 8000:8000 -d pbgnz/random-quote-api
 ```
 
-Run using Dockerhub's image:
+### Run using Dockerhub's image:
 
+Pull the latest image from Dockerhub
 ```bash
-# Pull the latest image from Dockerhub
-docker pull pbgnz/random-quote-api:v1.5.2
-
-# Run image
-docker run -p 8000:8000 -d pbgnz/random-quote-api:v1.5.2
-
-# Fetch endpoint
+docker pull pbgnz/random-quote-api:1.5.2
+```
+Run image
+```bash
+docker run -p 8000:8000 -d pbgnz/random-quote-api:1.5.2
+```
+Fetch endpoint
+```bash
 GET http://localhost:8000/api/quotes
 ```
 
-Run using Docker-compose:
+### Run using Docker-compose:
 
+Add the image to your docker-compose.yaml file
 ```bash
-# Add it to your docker-compose.yaml file
+# example
 version: '3'
 services:
   api:
-    image: 'pbgnz/random-quote-api:v1.5.2'
+    image: 'pbgnz/random-quote-api:1.5.2'
     ports:
       - '8000:8000'
 ```
