@@ -5,10 +5,10 @@ const cors = require('cors')
 const path = require('path');
 const request = require('request');
 const cheerio = require('cheerio');
+const rateLimit = require('express-rate-limit');
 
 // set up rate limiter: maximum of five requests per minute
-var rateLimit = require('express-rate-limit');
-var limiter = rateLimit({
+const limiter = rateLimit({
   windowMs: 1*60*1000, // 1 minute
   max: 5
 });
