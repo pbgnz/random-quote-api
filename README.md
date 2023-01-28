@@ -1,8 +1,6 @@
 # random-quote-api
 a simple api that returns random quotes from famous authors   
 
-[![Docker Hub repository](https://dockerico.blankenship.io/image/pbgnz/random-quote-api)](https://registry.hub.docker.com/r/pbgnz/random-quote-api)
-
 ## API
 ```bash
 GET /api/quotes
