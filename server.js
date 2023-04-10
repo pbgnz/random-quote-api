@@ -3,14 +3,14 @@ const router = express.Router();
 const app = express();
 const cors = require('cors')
 const path = require('path');
-const request = require('request');
+const axios = require('axios');
 const cheerio = require('cheerio');
 const rateLimit = require('express-rate-limit');
 
-// set up rate limiter: maximum of five requests per minute
+// set up rate limiter: maximum of ten requests per minute
 const limiter = rateLimit({
   windowMs: 1*60*1000, // 1 minute
-  max: 5
+  max: 10
 });
 
 const corsOptions = {
@@ -37,22 +37,20 @@ router.get('/api/quotes', (req, res) => {
         res.status(200).send({ quotes });
     } else {
         let quotes = [];
-        request('https://www.goodreads.com/quotes?page=' + pageNumber, function (err, r, body) {
-            if (err) {
-                res.send("401: Error getting quotes");
-            } else {
-                let $ = cheerio.load(body);
-                $('div.quoteText').each(function (index) {
-                    const quote = $(this)[0].children[0].data.replace(/(\r\n|\n|\r| +(?= )| “|”)/gm, "");
-                    const id = index;
-                    quotes.push({ quote, id });
-                });
-                $('span.authorOrTitle').each(function (index) {
-                    quotes[index].author = $(this)[0].children[0].data.replace(/(\r\n|\n|\r| +(?= )|,)/gm, "");
-                });
-                identityMap.set(pageNumber, quotes);
-                res.status(200).send({ quotes });
-            }
+        axios.get('https://www.goodreads.com/quotes?page=' + pageNumber).then(response => {
+            let $ = cheerio.load(response.data);
+            $('div.quoteText').each(function (index) {
+              const quote = $(this)[0].children[0].data.replace(/(\r\n|\n|\r| +(?= )| “|”)/gm, "");
+              const id = index;
+              quotes.push({ quote, id });
+            });
+            $('span.authorOrTitle').each(function (index) {
+              quotes[index].author = $(this)[0].children[0].data.replace(/(\r\n|\n|\r| +(?= )|,)/gm, "");
+            });
+            identityMap.set(pageNumber, quotes);
+            res.status(200).send({ quotes });
+        }).catch(error => {
+            res.send("401: Error getting quotes");
         });
     }
 });
