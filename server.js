@@ -10,7 +10,7 @@ const rateLimit = require('express-rate-limit');
 // set up rate limiter: maximum of ten requests per minute
 const limiter = rateLimit({
   windowMs: 1*60*1000, // 1 minute
-  max: 10
+  max: 1000
 });
 
 const corsOptions = {
