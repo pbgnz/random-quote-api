@@ -2,6 +2,13 @@ const request = require('supertest');
 const app = require('./server');
 
 describe("the responses from the quotes api", () => {
+
+    it('should return a 200 status code and JSON content type', async () => {
+        await request(app)
+            .get('/api/quotes')
+            .expect('Content-Type', /json/)
+            .expect(200);
+    });
     
     it('should contain 30 quotes per api call', async () => {
         const response = await request(app)
@@ -55,5 +62,35 @@ describe("the responses from the quotes api", () => {
         expect(firstResponse.body.quotes[randomIndex].id === secondResponse.body.quotes[randomIndex].id).toBeTruthy();
         expect(firstResponse.body.quotes[randomIndex].author === secondResponse.body.quotes[randomIndex].author).toBeFalsy();
         expect(firstResponse.body.quotes[randomIndex].quote === secondResponse.body.quotes[randomIndex].quote).toBeFalsy();
+    });
+
+    it('should have unique IDs for each quote', async () => {
+        const response = await request(app)
+            .get('/api/quotes')
+            .send()
+            .expect(200);
+    
+        const ids = response.body.quotes.map(quote => quote.id);
+        const uniqueIds = new Set(ids);
+        expect(uniqueIds.size).toEqual(ids.length);
+    });
+
+    it('should not contain empty fields in any quote', async () => {
+        const response = await request(app)
+            .get('/api/quotes')
+            .send()
+            .expect(200);
+    
+        response.body.quotes.forEach(quote => {
+            expect(quote.id).not.toBe('');
+            expect(quote.author).not.toBe('');
+            expect(quote.quote).not.toBe('');
+        });
+    });
+
+    it('should return an error for invalid endpoints', async () => {
+        await request(app)
+            .get('/api/invalid_endpoint')
+            .expect(404);
     });
 });
