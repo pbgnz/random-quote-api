@@ -59,7 +59,7 @@ describe("the responses from the quotes api", () => {
 
         const randomIndex = Math.floor(Math.random() * 30);
 
-        expect(firstResponse.body.quotes[randomIndex].id === secondResponse.body.quotes[randomIndex].id).toBeTruthy();
+        expect(firstResponse.body.quotes[randomIndex].id === secondResponse.body.quotes[randomIndex].id).toBeFalsy();
         expect(firstResponse.body.quotes[randomIndex].author === secondResponse.body.quotes[randomIndex].author).toBeFalsy();
         expect(firstResponse.body.quotes[randomIndex].quote === secondResponse.body.quotes[randomIndex].quote).toBeFalsy();
     });

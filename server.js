@@ -13,7 +13,7 @@ const limiter = rateLimit({
   max: 1000
 });
 
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:8080', 'https://escobot.github.io']; // add frontend application
+const allowedOrigins = ['http://localhost:3000', 'https://escobot.github.io']; // add frontend application
 const corsOptions = {
     origin: function (origin, callback) {
       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -48,7 +48,7 @@ router.get('/api/quotes', (req, res) => {
             let $ = cheerio.load(response.data);
             $('div.quoteText').each(function (index) {
               const quote = $(this)[0].children[0].data.replace(/(\r\n|\n|\r| +(?= )| “|”)/gm, "");
-              const id = index;
+              const id = ((pageNumber - 1) * 30) + index;
               quotes.push({ quote, id });
             });
             $('span.authorOrTitle').each(function (index) {
