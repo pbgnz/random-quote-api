@@ -4,4 +4,4 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 EXPOSE 8000
-CMD [ "node", "start.js" ]
+CMD [ "node", "src/start.js" ]
