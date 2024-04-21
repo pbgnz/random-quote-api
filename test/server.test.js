@@ -42,7 +42,7 @@ describe("the responses from the quotes api", () => {
         const randomIndexSecondHalf = Math.floor(Math.random() * (29 - 15 + 1) + 15);
 
         expect(response.body.quotes[randomIndexFirstHalf].id === response.body.quotes[randomIndexSecondHalf].id).toBeFalsy();
-        // expect(response.body.quotes[randomIndexFirstHalf].author === response.body.quotes[randomIndexSecondHalf].author).toBeFalsy();
+        expect(response.body.quotes[randomIndexFirstHalf].author === response.body.quotes[randomIndexSecondHalf].author).toBeFalsy();
         expect(response.body.quotes[randomIndexFirstHalf].quote === response.body.quotes[randomIndexSecondHalf].quote).toBeFalsy();
     });
 

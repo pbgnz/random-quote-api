@@ -33,7 +33,7 @@ app.use(router);
 let identityMap = new Map();
 
 router.get('/', (req, res) => {
-    res.status(200).sendFile(path.join(__dirname + '/index.html'));
+    res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
 router.get('/api/quotes', (req, res) => {
