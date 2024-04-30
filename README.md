@@ -45,7 +45,7 @@ docker build -t pbgnz/random-quote-api .
 ```
 Run image
 ```bash
-docker run -p 8000:8000 pbgnz/random-quote-api
+docker run -d -p 8000:8000 pbgnz/random-quote-api
 ```
 
 ### Run using Dockerhub's image:
