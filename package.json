@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/pbgnz/random-quote-api#readme",
   "dependencies": {
-    "axios": "^1.7.9",
+    "axios": "^1.8.1",
     "cheerio": "^1.0.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
