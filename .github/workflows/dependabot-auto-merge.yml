@@ -1,0 +1,44 @@
+name: Dependabot auto-merge
+
+on:
+  workflow_run:
+    workflows: ["Unit tests"]
+    types: [completed]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request'
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enable auto-merge for Dependabot PRs
+        run: |
+          # Get the PR associated with this workflow run
+          PR_NUMBER=$(gh run view ${{ github.event.workflow_run.id }} --json pullRequests --jq '.pullRequests[0].number' 2>/dev/null || echo "")
+          
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No PR found for this workflow run"
+            exit 0
+          fi
+          
+          # Get the PR author
+          AUTHOR=$(gh pr view $PR_NUMBER --json author --jq '.author.login')
+          
+          if [ "$AUTHOR" == "dependabot[bot]" ]; then
+            echo "Enabling auto-merge for Dependabot PR #$PR_NUMBER"
+            gh pr merge $PR_NUMBER --squash --auto
+          else
+            echo "PR #$PR_NUMBER is not from Dependabot (author: $AUTHOR), skipping auto-merge"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
