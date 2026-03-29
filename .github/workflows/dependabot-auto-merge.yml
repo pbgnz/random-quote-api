@@ -2,7 +2,7 @@ name: Dependabot auto-merge
 
 on:
   workflow_run:
-    workflows: ["Unit tests"]
+    workflows: ["Unit tests", "CodeQL analysis", "Docker image"]
     types: [completed]
 
 permissions:
