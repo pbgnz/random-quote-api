@@ -12,7 +12,8 @@ const limiter = rateLimit({
   max: 1000
 });
 
-const allowedOrigins = ['http://localhost:3000', 'https://escobot.github.io'];
+// Parse allowed origins from environment variable
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',').map(origin => origin.trim());
 
 const corsOptions = {
   origin: (origin, callback) => {
