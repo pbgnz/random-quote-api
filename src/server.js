@@ -6,6 +6,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const rateLimit = require('express-rate-limit');
 const QuotesCache = require('./quotesCache');
+const logger = require('./logger');
 
 // Rate limiter: maximum of 1000 requests per minute
 const limiter = rateLimit({
@@ -21,6 +22,7 @@ const corsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      logger.warn('CORS request blocked', { origin, allowedOrigins });
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -34,7 +36,7 @@ app.use(express.json());
 
 // Initialize quotes cache with TTL from environment
 const quotesCacheTtlMinutes = parseInt(process.env.CACHE_TTL_MINUTES) || 60;
-const quoteCache = new QuotesCache(quotesCacheTtlMinutes);
+const quoteCache = new QuotesCache(quotesCacheTtlMinutes, logger);
 
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'));
@@ -45,10 +47,12 @@ app.get('/api/quotes', async (req, res) => {
 
   const cachedQuotes = quoteCache.get(pageNumber);
   if (cachedQuotes) {
+    logger.debug('Returning cached quotes', { pageNumber, quoteCount: cachedQuotes.length });
     return res.status(200).json({ quotes: cachedQuotes });
   }
 
   try {
+    logger.debug('Fetching quotes from Goodreads', { pageNumber });
     const response = await axios.get(`https://www.goodreads.com/quotes?page=${pageNumber}`);
     const $ = cheerio.load(response.data);
     const quotes = [];
@@ -64,15 +68,24 @@ app.get('/api/quotes', async (req, res) => {
     });
 
     quoteCache.set(pageNumber, quotes);
+    logger.info('Quotes fetched and cached', { pageNumber, quoteCount: quotes.length });
     res.status(200).json({ quotes });
   } catch (error) {
+    logger.error('Error fetching quotes from Goodreads', {
+      pageNumber,
+      errorMessage: error.message,
+      errorCode: error.code,
+      isTimeout: error.code === 'ECONNABORTED'
+    });
     res.status(401).json({ message: "Error getting quotes" });
   }
 });
 
 // Cache stats endpoint (useful for monitoring)
 app.get('/api/cache/stats', (req, res) => {
-  res.status(200).json(quoteCache.getStats());
+  const stats = quoteCache.getStats();
+  logger.debug('Cache stats requested', stats);
+  res.status(200).json(stats);
 });
 
 app.get('*', (req, res) => {

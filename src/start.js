@@ -1,9 +1,10 @@
 require('dotenv').config();
 
 const app = require('./server');
+const logger = require('./logger');
 const port = process.env.PORT || 8000;
+const appUrl = process.env.APP_URL || `http://localhost:${port}`;
 
 app.listen(port, () => {
-  const host = process.env.APP_URL || `http://localhost:${port}`;
-  console.log(`Server is running on ${host}`);
+  logger.info('Server started', { port, url: appUrl });
 });

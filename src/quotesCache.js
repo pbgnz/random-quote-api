@@ -1,10 +1,12 @@
 class QuotesCache {
   /**
    * @param {number} ttlMinutes - Time to live for cached entries in minutes
+   * @param {object} logger - Logger instance for structured logging
    */
-  constructor(ttlMinutes = 60) {
+  constructor(ttlMinutes = 60, logger = null) {
     this.ttlMs = ttlMinutes * 60 * 1000;
     this.store = new Map();
+    this.logger = logger;
     this.metrics = {
       hits: 0,
       misses: 0,
@@ -22,16 +24,19 @@ class QuotesCache {
 
     if (!cached) {
       this.metrics.misses++;
+      this.logger?.debug('Cache miss', { pageNumber });
       return null;
     }
 
     if (this._isExpired(cached.timestamp)) {
       this.metrics.expirations++;
       this.store.delete(pageNumber);
+      this.logger?.debug('Cache expired', { pageNumber, ageMs: Date.now() - cached.timestamp });
       return null;
     }
 
     this.metrics.hits++;
+    this.logger?.debug('Cache hit', { pageNumber, ageMs: Date.now() - cached.timestamp });
     return cached.quotes;
   }
 
