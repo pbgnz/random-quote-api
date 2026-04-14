@@ -30,9 +30,11 @@ const corsOptions = {
   methods: "GET"
 };
 
-app.use(limiter);
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// Apply rate limiter only to API routes (not static files)
+app.use('/api/', limiter);
 
 // Initialize quotes cache with TTL from environment
 const quotesCacheTtlMinutes = parseInt(process.env.CACHE_TTL_MINUTES) || 60;
@@ -53,7 +55,9 @@ app.get('/api/quotes', async (req, res) => {
 
   try {
     logger.debug('Fetching quotes from Goodreads', { pageNumber });
-    const response = await axios.get(`https://www.goodreads.com/quotes?page=${pageNumber}`);
+    const response = await axios.get(`https://www.goodreads.com/quotes?page=${pageNumber}`, {
+      timeout: 15000 // 15 second timeout
+    });
     const $ = cheerio.load(response.data);
     const quotes = [];
 
@@ -71,13 +75,15 @@ app.get('/api/quotes', async (req, res) => {
     logger.info('Quotes fetched and cached', { pageNumber, quoteCount: quotes.length });
     res.status(200).json({ quotes });
   } catch (error) {
+    const isTimeout = error.code === 'ECONNABORTED';
     logger.error('Error fetching quotes from Goodreads', {
       pageNumber,
       errorMessage: error.message,
       errorCode: error.code,
-      isTimeout: error.code === 'ECONNABORTED'
+      isTimeout,
+      errorType: isTimeout ? 'TIMEOUT' : 'API_ERROR'
     });
-    res.status(401).json({ message: "Error getting quotes" });
+    res.status(500).json({ message: "Error getting quotes" });
   }
 });
 
@@ -89,6 +95,7 @@ app.get('/api/cache/stats', (req, res) => {
 });
 
 app.get('*', (req, res) => {
+  logger.debug('404 - Route not found', { path: req.path, method: req.method });
   res.status(404).json({ error: "404 not found" });
 });
 
