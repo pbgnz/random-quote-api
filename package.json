@@ -1,10 +1,10 @@
 {
   "name": "random-quote-api",
-  "version": "1.5.1",
+  "version": "1.8.0",
   "description": "get random quotes",
-  "main": "start.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node src/start.js",
+    "start": "node src/server.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
@@ -20,12 +20,13 @@
   },
   "homepage": "https://github.com/pbgnz/random-quote-api#readme",
   "dependencies": {
-    "dotenv": "^17.4.2",
-    "axios": "^1.15.0",
     "cheerio": "^1.2.0",
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
     "express": "^4.22.1",
-    "express-rate-limit": "^8.3.2"
+    "express-rate-limit": "^8.3.2",
+    "helmet": "^8.1.0"
   },
   "devDependencies": {
     "jest": "^30.3.0",
