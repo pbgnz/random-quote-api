@@ -1,6 +1,6 @@
 {
   "name": "random-quote-api",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "get random quotes",
   "main": "server.js",
   "scripts": {

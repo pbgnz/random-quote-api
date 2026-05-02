@@ -24,5 +24,15 @@
     ]
 }
 </code></pre>
+      <pre><code class="lang-bash">GET <span class="hljs-regexp">/api/</span>cache/stats
+</code></pre>
+      <pre><code class="lang-bash">{
+    <span class="hljs-attr">"hits"</span>: <span class="hljs-string">"number"</span>,
+    <span class="hljs-attr">"misses"</span>: <span class="hljs-string">"number"</span>,
+    <span class="hljs-attr">"expirations"</span>: <span class="hljs-string">"number"</span>,
+    <span class="hljs-attr">"hitRate"</span>: <span class="hljs-string">"string"</span>,
+    <span class="hljs-attr">"cacheSize"</span>: <span class="hljs-string">"number"</span>
+}
+</code></pre>
    </body>
 </html>
