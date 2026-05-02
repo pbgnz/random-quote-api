@@ -75,3 +75,51 @@ services:
     ports:
       - '8000:8000'
 ```
+
+## Load Testing
+
+### Using JMeter
+
+The project includes a JMeter load test plan (`test/load_test.jmx`) configured to test the `/api/quotes` endpoint.
+
+#### Prerequisites
+
+Install JMeter via Homebrew (macOS):
+```bash
+brew install jmeter
+```
+
+Or download from [Apache JMeter](https://jmeter.apache.org/download_jmeter.cgi).
+
+#### Running the Test
+
+Start the API first:
+```bash
+npm start
+```
+
+In another terminal, run the load test:
+```bash
+jmeter -n -t test/load_test.jmx \
+  -JTARGET_HOST=localhost \
+  -JTARGET_PORT=8000 \
+  -l results.jtl \
+  -j jmeter.log
+```
+
+#### Generate HTML Report
+
+After the test completes, generate an interactive HTML report:
+
+```bash
+jmeter -g results.jtl -o results/html-report/
+# Open in browser: results/html-report/index.html
+```
+
+#### Test Configuration
+
+The load test is configured with:
+- **100 concurrent threads** (simulated users)
+- **20-second ramp-up time** (linearly increase threads over 20s)
+- **Infinite loop** (each thread makes continuous requests until stopped)
+- **Target**: `GET /api/quotes`
