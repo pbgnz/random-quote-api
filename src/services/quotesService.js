@@ -6,13 +6,14 @@ class QuotesService {
     this.logger = logger;
   }
 
-  async getQuotes() {
+  async getQuotes({ count } = {}) {
     const pageNumber = Math.floor(Math.random() * 100) + 1;
 
     const cached = this.cache.get(pageNumber);
     if (cached) {
       this.logger.debug('Cache hit', { pageNumber });
-      return { quotes: cached };
+      const quotes = cached;
+      return { quotes: count ? quotes.slice(0, count) : quotes };
     }
 
     try {
@@ -29,7 +30,7 @@ class QuotesService {
         count: quotes.length
       });
 
-      return { quotes };
+      return { quotes: count ? quotes.slice(0, count) : quotes };
 
     } catch (error) {
       this.logger.error('Scraping failed', {
@@ -42,7 +43,8 @@ class QuotesService {
 
       if (fallback) {
         this.logger.warn('Using fallback cache');
-        return { quotes: fallback };
+        const quotes = fallback;
+        return { quotes: count ? quotes.slice(0, count) : quotes };
       }
 
       throw error;

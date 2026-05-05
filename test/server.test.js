@@ -94,3 +94,37 @@ describe("the responses from the quotes api", () => {
             .expect(404);
     });
 });
+
+describe("GET /api/quotes with ?count param", () => {
+    it('should return exactly the requested number of quotes', async () => {
+        const response = await request(app)
+            .get('/api/quotes?count=5')
+            .expect(200);
+
+        expect(response.body.quotes.length).toEqual(5);
+    });
+
+    it('should return all quotes when count is not specified', async () => {
+        const response = await request(app)
+            .get('/api/quotes')
+            .expect(200);
+
+        expect(response.body.quotes.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should ignore a non-numeric count and return all quotes', async () => {
+        const response = await request(app)
+            .get('/api/quotes?count=abc')
+            .expect(200);
+
+        expect(response.body.quotes.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should ignore count=0 and return all quotes', async () => {
+        const response = await request(app)
+            .get('/api/quotes?count=0')
+            .expect(200);
+
+        expect(response.body.quotes.length).toBeGreaterThanOrEqual(1);
+    });
+});

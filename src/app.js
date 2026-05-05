@@ -46,7 +46,9 @@ app.get('/', (req, res) => {
 
 app.get('/api/quotes', async (req, res) => {
   try {
-    const result = await quotesService.getQuotes();
+    const count = req.query.count !== undefined ? parseInt(req.query.count, 10) : undefined;
+    const validCount = Number.isInteger(count) && count >= 1 && count <= 30 ? count : undefined;
+    const result = await quotesService.getQuotes({ count: validCount });
     res.json(result);
   } catch (err) {
     res.status(500).json({ message: 'Error getting quotes' });
