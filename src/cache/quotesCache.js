@@ -78,6 +78,15 @@ class QuotesCache {
     this.metrics = { hits: 0, misses: 0, expirations: 0 };
   }
 
+  getAny() {
+    for (const [, entry] of this.store) {
+      if (!this._isExpired(entry.timestamp)) {
+        return entry.quotes;
+      }
+    }
+    return null;
+  }
+
   /**
    * Private: Check if a cached entry has expired
    * @private

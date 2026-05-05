@@ -38,7 +38,7 @@ class QuotesService {
       });
 
       // Fallback to ANY cached data
-      const fallback = this.cache.getAny?.();
+      const fallback = this.cache.getAny();
 
       if (fallback) {
         this.logger.warn('Using fallback cache');
