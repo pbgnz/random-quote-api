@@ -128,3 +128,25 @@ describe("GET /api/quotes with ?count param", () => {
         expect(response.body.quotes.length).toBeGreaterThanOrEqual(1);
     });
 });
+
+describe("GET /api/quotes/random", () => {
+    it('should return 200 and a single quote object', async () => {
+        const response = await request(app)
+            .get('/api/quotes/random')
+            .expect('Content-Type', /json/)
+            .expect(200);
+
+        expect(response.body.quote).toBeDefined();
+        expect(response.body.quote.id).toBeTruthy();
+        expect(response.body.quote.author).toBeTruthy();
+        expect(response.body.quote.quote).toBeTruthy();
+    });
+
+    it('should not return a quotes array', async () => {
+        const response = await request(app)
+            .get('/api/quotes/random')
+            .expect(200);
+
+        expect(response.body.quotes).toBeUndefined();
+    });
+});

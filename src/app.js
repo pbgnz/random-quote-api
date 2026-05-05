@@ -44,6 +44,16 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
+app.get('/api/quotes/random', async (req, res) => {
+  try {
+    const result = await quotesService.getQuotes();
+    const quote = result.quotes[Math.floor(Math.random() * result.quotes.length)];
+    res.json({ quote });
+  } catch (err) {
+    res.status(500).json({ message: 'Error getting quotes' });
+  }
+});
+
 app.get('/api/quotes', async (req, res) => {
   try {
     const count = req.query.count !== undefined ? parseInt(req.query.count, 10) : undefined;

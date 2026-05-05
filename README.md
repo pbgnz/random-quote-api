@@ -2,19 +2,68 @@
 a simple api that returns random quotes from famous authors   
 
 ## API
+
+### Get quotes
+
 ```bash
 GET /api/quotes
 ```
 
+Returns up to 30 random quotes. Use the optional `count` parameter to limit the number returned.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `count` | number | Optional. Number of quotes to return (1–30). Defaults to all quotes on the page. |
+
 ```bash
+GET /api/quotes?count=5
+```
+
+```json
 {
     "quotes": [
         {
+            "id": 1,
             "author": "string",
-            "quote": "string",
-            "id": "number"
+            "quote": "string"
         }
     ]
+}
+```
+
+---
+
+### Get a single random quote
+
+```bash
+GET /api/quotes/random
+```
+
+```json
+{
+    "quote": {
+        "id": 1,
+        "author": "string",
+        "quote": "string"
+    }
+}
+```
+
+---
+
+### Get cache stats
+
+```bash
+GET /api/cache/stats
+```
+
+```json
+{
+    "hits": 42,
+    "misses": 8,
+    "expirations": 1,
+    "hitRate": "84.00%",
+    "cacheSize": 3
 }
 ```
 
