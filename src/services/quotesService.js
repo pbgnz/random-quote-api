@@ -4,10 +4,11 @@ class QuotesService {
   constructor(cache, logger) {
     this.cache = cache;
     this.logger = logger;
+    this.maxPage = parseInt(process.env.SCRAPER_MAX_PAGE) || 100;
   }
 
   async getQuotes({ count } = {}) {
-    const pageNumber = Math.floor(Math.random() * 100) + 1;
+    const pageNumber = Math.floor(Math.random() * this.maxPage) + 1;
 
     const cached = this.cache.get(pageNumber);
     if (cached) {

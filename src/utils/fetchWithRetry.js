@@ -1,6 +1,7 @@
-const DEFAULT_TIMEOUT = 15000;
+const DEFAULT_TIMEOUT = parseInt(process.env.SCRAPER_TIMEOUT_MS) || 15000;
+const DEFAULT_RETRIES = parseInt(process.env.SCRAPER_RETRIES) || 2;
 
-async function fetchWithRetry(url, options = {}, retries = 2) {
+async function fetchWithRetry(url, options = {}, retries = DEFAULT_RETRIES) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT);
 
