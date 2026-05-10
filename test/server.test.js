@@ -225,3 +225,43 @@ describe("GET /api/cache/stats", () => {
         expect(expirations >= 0).toBe(true);
     });
 });
+
+describe("GET /health", () => {
+    it('should return 200 with health status', async () => {
+        const response = await request(app)
+            .get('/health')
+            .expect('Content-Type', /json/)
+            .expect(200);
+
+        expect(response.body.status).toBe('ok');
+    });
+
+    it('should include uptime as a number', async () => {
+        const response = await request(app)
+            .get('/health')
+            .expect(200);
+
+        expect(typeof response.body.uptime).toBe('number');
+        expect(response.body.uptime >= 0).toBe(true);
+    });
+
+    it('should include timestamp in ISO format', async () => {
+        const response = await request(app)
+            .get('/health')
+            .expect(200);
+
+        expect(response.body.timestamp).toBeDefined();
+        const timestamp = new Date(response.body.timestamp);
+        expect(timestamp.toString()).not.toBe('Invalid Date');
+    });
+
+    it('should return required fields', async () => {
+        const response = await request(app)
+            .get('/health')
+            .expect(200);
+
+        expect(response.body).toHaveProperty('status');
+        expect(response.body).toHaveProperty('uptime');
+        expect(response.body).toHaveProperty('timestamp');
+    });
+});

@@ -42,9 +42,21 @@ app.use(cors({
 const cache = new QuotesCache(parseInt(process.env.CACHE_TTL_MINUTES) || 60, logger);
 const quotesService = new QuotesService(cache, logger);
 
+// Server start time for health checks
+const startTime = Date.now();
+
 // Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
+app.get('/health', (req, res) => {
+  const uptime = Math.floor((Date.now() - startTime) / 1000);
+  res.json({
+    status: 'ok',
+    uptime,
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.get('/api/quotes/random', async (req, res) => {

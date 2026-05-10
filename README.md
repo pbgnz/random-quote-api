@@ -67,6 +67,30 @@ GET /api/cache/stats
 }
 ```
 
+---
+
+### Health check
+
+```bash
+GET /health
+```
+
+Returns the health status of the API, including uptime and current timestamp. Useful for monitoring, load balancer health probes, and Kubernetes liveness checks.
+
+```json
+{
+    "status": "ok",
+    "uptime": 3600,
+    "timestamp": "2026-05-10T12:30:45.123Z"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | string | Always "ok" when the service is healthy |
+| `uptime` | number | Seconds since server start |
+| `timestamp` | string | ISO 8601 timestamp of the health check |
+
 ## Dev
 
 ### Requirements:
