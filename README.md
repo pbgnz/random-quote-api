@@ -8,8 +8,11 @@ A simple REST API that returns random quotes from Goodreads with built-in cachin
 # Install dependencies
 npm install
 
-# Start server (listens on localhost:8000)
+# Start REST API server (listens on localhost:8000)
 npm start
+
+# Start MCP server (for Claude Desktop / Claude Code)
+npm run mcp
 
 # Run tests
 npm test
@@ -51,6 +54,7 @@ curl http://localhost:8000/health
 - **Graceful Shutdown**: Clean shutdown on SIGTERM/SIGINT signals
 - **Health Checks**: `/health` endpoint for load balancers and k8s probes
 - **CORS**: Configurable cross-origin requests
+- **MCP Integration**: Standalone MCP server for AI assistants (Claude Desktop, Claude Code)
 
 ## Configuration
 
@@ -66,6 +70,37 @@ All settings are environment variables (see `.env.example`):
 | `RATE_LIMIT_MAX` | 100 | Max requests per window |
 | `RATE_LIMIT_WINDOW_MS` | 60000 | Rate limit window |
 
+## MCP Server
+
+This project includes a standalone MCP (Model Context Protocol) server that exposes quote functionality to AI assistants.
+
+### Run MCP Server
+
+```bash
+npm run mcp
+```
+
+The server will start on stdio and listen for JSON-RPC requests. Available tools:
+
+- **get_random_quote**: Get a single random quote
+- **get_quotes**: Get multiple quotes (supports optional `count` parameter, 1-30)
+- **get_cache_stats**: Get cache statistics (hits, misses, expirations, hit rate)
+
+### Use with Claude Desktop
+
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "random-quote-api": {
+      "command": "node",
+      "args": ["/path/to/random-quote-api/src/mcp.js"]
+    }
+  }
+}
+```
+
 ## Development
 
 ### Run with Docker
@@ -80,7 +115,8 @@ docker run -p 8000:8000 random-quote-api
 ```
 src/
   app.js                      # Express app setup
-  server.js                   # Server entry point with graceful shutdown
+  server.js                   # REST API entry point with graceful shutdown
+  mcp.js                      # MCP server (JSON-RPC over stdio)
   middleware/requestLogger.js # Request ID and access logging
   services/quotesService.js   # Business logic
   cache/quotesCache.js        # In-memory cache with TTL
