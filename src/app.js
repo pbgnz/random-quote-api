@@ -114,7 +114,7 @@ app.get('/api/cache/stats', (req, res) => {
   res.redirect(301, '/api/v1/cache/stats');
 });
 
-app.get('*', (req, res) => {
+app.get('/*splat', (req, res) => {
   res.status(404).json({ error: '404 not found' });
 });
 
