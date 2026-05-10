@@ -113,6 +113,26 @@ Example log output:
 
 This structured logging makes it easy to parse logs with log aggregators, search by request ID for tracing, and monitor request performance.
 
+## Deployment & Reliability
+
+### Graceful Shutdown
+
+The API implements graceful shutdown for `SIGTERM` and `SIGINT` signals, essential for zero-downtime deployments in container orchestrators (Docker, Kubernetes, etc.).
+
+When a shutdown signal is received:
+1. The server stops accepting new connections
+2. Existing in-flight requests are allowed to complete
+3. Process exits cleanly with code 0
+4. If connections don't close within 10 seconds, they are force-closed and the process exits with code 1
+
+Example logs during graceful shutdown:
+```json
+{"timestamp":"2026-05-10T15:09:14.640Z","level":"info","message":"Shutdown signal received","signal":"SIGTERM"}
+{"timestamp":"2026-05-10T15:09:14.641Z","level":"info","message":"Server closed, exiting","signal":"SIGTERM"}
+```
+
+This ensures that load balancers and orchestrators can safely remove instances from rotation without dropping in-flight requests.
+
 ## Dev
 
 ### Requirements:
