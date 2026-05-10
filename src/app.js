@@ -61,7 +61,8 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.get('/api/quotes/random', async (req, res) => {
+// API v1 Routes
+app.get('/api/v1/quotes/random', async (req, res) => {
   try {
     const result = await quotesService.getQuotes();
     const quote = result.quotes[Math.floor(Math.random() * result.quotes.length)];
@@ -71,7 +72,7 @@ app.get('/api/quotes/random', async (req, res) => {
   }
 });
 
-app.get('/api/quotes', async (req, res) => {
+app.get('/api/v1/quotes', async (req, res) => {
   try {
     const count = req.query.count !== undefined ? parseInt(req.query.count, 10) : undefined;
     const validCount = Number.isInteger(count) && count >= 1 && count <= 30 ? count : undefined;
@@ -82,8 +83,21 @@ app.get('/api/quotes', async (req, res) => {
   }
 });
 
-app.get('/api/cache/stats', (req, res) => {
+app.get('/api/v1/cache/stats', (req, res) => {
   res.json(cache.getStats());
+});
+
+// Backward compatibility: redirect old /api/* routes to /api/v1/*
+app.get('/api/quotes/random', (req, res) => {
+  res.redirect(301, '/api/v1/quotes/random');
+});
+
+app.get('/api/quotes', (req, res) => {
+  res.redirect(301, '/api/v1/quotes' + (req.url.includes('?') ? '?' + req.url.split('?')[1] : ''));
+});
+
+app.get('/api/cache/stats', (req, res) => {
+  res.redirect(301, '/api/v1/cache/stats');
 });
 
 app.get('*', (req, res) => {

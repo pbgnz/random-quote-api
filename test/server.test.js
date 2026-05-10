@@ -32,18 +32,18 @@ jest.mock('../src/scraper/goodreadsScraper', () => {
 
 const app = require('../src/app');
 
-describe("the responses from the quotes api", () => {
+describe("the responses from the quotes api (v1)", () => {
 
     it('should return a 200 status code and JSON content type', async () => {
         await request(app)
-            .get('/api/quotes')
+            .get('/api/v1/quotes')
             .expect('Content-Type', /json/)
             .expect(200);
     });
 
     it('should contain quotes per api call', async () => {
         const response = await request(app)
-            .get('/api/quotes')
+            .get('/api/v1/quotes')
             .send()
             .expect(200);
 
@@ -53,7 +53,7 @@ describe("the responses from the quotes api", () => {
 
     it('should contain the proper fields of id, author, quote', async () => {
         const response = await request(app)
-            .get('/api/quotes')
+            .get('/api/v1/quotes')
             .send()
             .expect(200);
 
@@ -66,7 +66,7 @@ describe("the responses from the quotes api", () => {
 
     it('should contain different quotes in the response', async () => {
         const response = await request(app)
-            .get('/api/quotes')
+            .get('/api/v1/quotes')
             .send()
             .expect(200);
 
@@ -87,12 +87,12 @@ describe("the responses from the quotes api", () => {
         // This test requests quotes twice and verifies we get different pages
         // (because we mock random page selection)
         const firstResponse = await request(app)
-            .get('/api/quotes')
+            .get('/api/v1/quotes')
             .send()
             .expect(200);
 
         const secondResponse = await request(app)
-            .get('/api/quotes')
+            .get('/api/v1/quotes')
             .send()
             .expect(200);
 
@@ -103,7 +103,7 @@ describe("the responses from the quotes api", () => {
 
     it('should have unique IDs within a response', async () => {
         const response = await request(app)
-            .get('/api/quotes')
+            .get('/api/v1/quotes')
             .send()
             .expect(200);
 
@@ -114,7 +114,7 @@ describe("the responses from the quotes api", () => {
 
     it('should not contain empty fields in any quote', async () => {
         const response = await request(app)
-            .get('/api/quotes')
+            .get('/api/v1/quotes')
             .send()
             .expect(200);
 
@@ -135,7 +135,7 @@ describe("the responses from the quotes api", () => {
 describe("GET /api/quotes with ?count param", () => {
     it('should return exactly the requested number of quotes', async () => {
         const response = await request(app)
-            .get('/api/quotes?count=5')
+            .get('/api/v1/quotes?count=5')
             .expect(200);
 
         expect(response.body.quotes.length).toEqual(5);
@@ -143,7 +143,7 @@ describe("GET /api/quotes with ?count param", () => {
 
     it('should return all quotes when count is not specified', async () => {
         const response = await request(app)
-            .get('/api/quotes')
+            .get('/api/v1/quotes')
             .expect(200);
 
         expect(response.body.quotes.length).toBeGreaterThanOrEqual(1);
@@ -151,7 +151,7 @@ describe("GET /api/quotes with ?count param", () => {
 
     it('should ignore a non-numeric count and return all quotes', async () => {
         const response = await request(app)
-            .get('/api/quotes?count=abc')
+            .get('/api/v1/quotes?count=abc')
             .expect(200);
 
         expect(response.body.quotes.length).toBeGreaterThanOrEqual(1);
@@ -159,7 +159,7 @@ describe("GET /api/quotes with ?count param", () => {
 
     it('should ignore count=0 and return all quotes', async () => {
         const response = await request(app)
-            .get('/api/quotes?count=0')
+            .get('/api/v1/quotes?count=0')
             .expect(200);
 
         expect(response.body.quotes.length).toBeGreaterThanOrEqual(1);
@@ -167,7 +167,7 @@ describe("GET /api/quotes with ?count param", () => {
 
     it('should respect count upper bound of 30', async () => {
         const response = await request(app)
-            .get('/api/quotes?count=100')
+            .get('/api/v1/quotes?count=100')
             .expect(200);
 
         expect(response.body.quotes.length).toBeLessThanOrEqual(30);
@@ -177,7 +177,7 @@ describe("GET /api/quotes with ?count param", () => {
 describe("GET /api/quotes/random", () => {
     it('should return 200 and a single quote object', async () => {
         const response = await request(app)
-            .get('/api/quotes/random')
+            .get('/api/v1/quotes/random')
             .expect('Content-Type', /json/)
             .expect(200);
 
@@ -189,17 +189,17 @@ describe("GET /api/quotes/random", () => {
 
     it('should not return a quotes array', async () => {
         const response = await request(app)
-            .get('/api/quotes/random')
+            .get('/api/v1/quotes/random')
             .expect(200);
 
         expect(response.body.quotes).toBeUndefined();
     });
 });
 
-describe("GET /api/cache/stats", () => {
+describe("GET /api/v1/cache/stats", () => {
     it('should return cache statistics with required fields', async () => {
         const response = await request(app)
-            .get('/api/cache/stats')
+            .get('/api/v1/cache/stats')
             .expect('Content-Type', /json/)
             .expect(200);
 
@@ -213,7 +213,7 @@ describe("GET /api/cache/stats", () => {
 
     it('should show stats as numbers', async () => {
         const response = await request(app)
-            .get('/api/cache/stats')
+            .get('/api/v1/cache/stats')
             .expect(200);
 
         const { hits, misses, expirations } = response.body;
@@ -263,5 +263,110 @@ describe("GET /health", () => {
         expect(response.body).toHaveProperty('status');
         expect(response.body).toHaveProperty('uptime');
         expect(response.body).toHaveProperty('timestamp');
+    });
+});
+
+describe("API v1 Routes", () => {
+    it('GET /api/v1/quotes should return 200 status code', async () => {
+        await request(app)
+            .get('/api/v1/quotes')
+            .expect('Content-Type', /json/)
+            .expect(200);
+    });
+
+    it('GET /api/v1/quotes should return quotes array', async () => {
+        const response = await request(app)
+            .get('/api/v1/quotes')
+            .expect(200);
+
+        expect(response.body.quotes).toBeDefined();
+        expect(Array.isArray(response.body.quotes)).toBe(true);
+        expect(response.body.quotes.length).toBeGreaterThan(0);
+    });
+
+    it('GET /api/v1/quotes?count=5 should return exactly 5 quotes', async () => {
+        const response = await request(app)
+            .get('/api/v1/quotes?count=5')
+            .expect(200);
+
+        expect(response.body.quotes.length).toEqual(5);
+    });
+
+    it('GET /api/v1/quotes/random should return a single quote', async () => {
+        const response = await request(app)
+            .get('/api/v1/quotes/random')
+            .expect('Content-Type', /json/)
+            .expect(200);
+
+        expect(response.body.quote).toBeDefined();
+        expect(response.body.quote.id).toBeTruthy();
+        expect(response.body.quote.author).toBeTruthy();
+        expect(response.body.quote.quote).toBeTruthy();
+    });
+
+    it('GET /api/v1/cache/stats should return cache statistics', async () => {
+        const response = await request(app)
+            .get('/api/v1/cache/stats')
+            .expect('Content-Type', /json/)
+            .expect(200);
+
+        expect(response.body.hits).toBeDefined();
+        expect(response.body.misses).toBeDefined();
+        expect(response.body.expirations).toBeDefined();
+        expect(response.body.hitRate).toBeDefined();
+    });
+});
+
+describe("Backward Compatibility - API Redirects", () => {
+    it('GET /api/quotes should redirect to /api/v1/quotes', async () => {
+        const response = await request(app)
+            .get('/api/quotes')
+            .expect(301);
+
+        expect(response.header.location).toBe('/api/v1/quotes');
+    });
+
+    it('GET /api/quotes?count=3 should redirect to /api/v1/quotes with query params', async () => {
+        const response = await request(app)
+            .get('/api/quotes?count=3')
+            .expect(301);
+
+        expect(response.header.location).toContain('/api/v1/quotes');
+        expect(response.header.location).toContain('count=3');
+    });
+
+    it('GET /api/quotes/random should redirect to /api/v1/quotes/random', async () => {
+        const response = await request(app)
+            .get('/api/quotes/random')
+            .expect(301);
+
+        expect(response.header.location).toBe('/api/v1/quotes/random');
+    });
+
+    it('GET /api/cache/stats should redirect to /api/v1/cache/stats', async () => {
+        const response = await request(app)
+            .get('/api/cache/stats')
+            .expect(301);
+
+        expect(response.header.location).toBe('/api/v1/cache/stats');
+    });
+
+    it('following redirect from /api/quotes should reach /api/v1/quotes', async () => {
+        const response = await request(app)
+            .get('/api/quotes')
+            .redirects(1)
+            .expect(200);
+
+        expect(response.body.quotes).toBeDefined();
+        expect(Array.isArray(response.body.quotes)).toBe(true);
+    });
+
+    it('following redirect from /api/quotes/random should reach /api/v1/quotes/random', async () => {
+        const response = await request(app)
+            .get('/api/quotes/random')
+            .redirects(1)
+            .expect(200);
+
+        expect(response.body.quote).toBeDefined();
     });
 });

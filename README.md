@@ -3,10 +3,16 @@ a simple api that returns random quotes from famous authors
 
 ## API
 
+### API Versioning
+
+The API uses versioning to manage changes over time. Current version is **v1**, accessible at `/api/v1/`.
+
+**Backward Compatibility**: Requests to the old `/api/` endpoints are automatically redirected (HTTP 301) to `/api/v1/`. We recommend updating clients to use the versioned endpoints.
+
 ### Get quotes
 
 ```bash
-GET /api/quotes
+GET /api/v1/quotes
 ```
 
 Returns up to 30 random quotes. Use the optional `count` parameter to limit the number returned.
@@ -16,7 +22,7 @@ Returns up to 30 random quotes. Use the optional `count` parameter to limit the 
 | `count` | number | Optional. Number of quotes to return (1–30). Defaults to all quotes on the page. |
 
 ```bash
-GET /api/quotes?count=5
+GET /api/v1/quotes?count=5
 ```
 
 ```json
@@ -36,7 +42,7 @@ GET /api/quotes?count=5
 ### Get a single random quote
 
 ```bash
-GET /api/quotes/random
+GET /api/v1/quotes/random
 ```
 
 ```json
@@ -54,7 +60,7 @@ GET /api/quotes/random
 ### Get cache stats
 
 ```bash
-GET /api/cache/stats
+GET /api/v1/cache/stats
 ```
 
 ```json
@@ -108,7 +114,7 @@ All API requests are logged in structured JSON format (NDJSON) with the followin
 
 Example log output:
 ```json
-{"timestamp":"2026-05-10T15:09:14.640Z","level":"info","message":"request","req_id":"550e8400-e29b-41d4-a716-446655440000","method":"GET","path":"/api/quotes","status":200,"duration_ms":42}
+{"timestamp":"2026-05-10T15:09:14.640Z","level":"info","message":"request","req_id":"550e8400-e29b-41d4-a716-446655440000","method":"GET","path":"/api/v1/quotes","status":200,"duration_ms":42}
 ```
 
 This structured logging makes it easy to parse logs with log aggregators, search by request ID for tracing, and monitor request performance.
@@ -175,7 +181,7 @@ docker run -p 8000:8000 -d pbgnz/random-quote-api:1.5.2
 ```
 Fetch endpoint
 ```bash
-GET http://localhost:8000/api/quotes
+GET http://localhost:8000/api/v1/quotes
 ```
 
 ### Run using Docker-compose:
