@@ -1,38 +1,121 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="utf-8">
-      <title>Random Quote API</title>
-      <meta name="description" content="Random Quote API">
-      <meta name="author" content="pbgnz">
-   </head>
-   <body>
-      <h1 id="random-quote-api">random-quote-api</h1>
-      <p>a simple api that returns random quotes from famous authors   </p>
-      <p><a href="https://github.com/pbgnz/random-quote-api" target="_blank">GitHub</a></p>
-      <p><a href="https://random-quote-api.onrender.com/api/quotes" target="_blank">Demo</a></p>
-      <h2 id="api">API</h2>
-      <pre><code class="lang-bash">GET <span class="hljs-regexp">/api/</span>quotes
-</code></pre>
-      <pre><code class="lang-bash">{
-    <span class="hljs-attr">"quotes"</span>: [
-        {
-            <span class="hljs-attr">"author"</span>: <span class="hljs-string">"string"</span>,
-            <span class="hljs-attr">"quote"</span>: <span class="hljs-string">"string"</span>,
-            <span class="hljs-attr">"id"</span>: <span class="hljs-string">"number"</span>
-        }
-    ]
-}
-</code></pre>
-      <pre><code class="lang-bash">GET <span class="hljs-regexp">/api/</span>cache/stats
-</code></pre>
-      <pre><code class="lang-bash">{
-    <span class="hljs-attr">"hits"</span>: <span class="hljs-string">"number"</span>,
-    <span class="hljs-attr">"misses"</span>: <span class="hljs-string">"number"</span>,
-    <span class="hljs-attr">"expirations"</span>: <span class="hljs-string">"number"</span>,
-    <span class="hljs-attr">"hitRate"</span>: <span class="hljs-string">"string"</span>,
-    <span class="hljs-attr">"cacheSize"</span>: <span class="hljs-string">"number"</span>
-}
-</code></pre>
-   </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Random Quote API</title>
+  <meta name="description" content="A simple API that returns random quotes from Goodreads">
+  <meta name="author" content="pbgnz">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      max-width: 600px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      color: #667eea;
+    }
+    .subtitle {
+      color: #666;
+      font-size: 1.1em;
+      margin-bottom: 30px;
+    }
+    .links {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    a {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: 2px solid #667eea;
+      color: #667eea;
+    }
+    a:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+    }
+    a.primary {
+      background: #667eea;
+      color: white;
+    }
+    a.primary:hover {
+      background: #764ba2;
+      border-color: #764ba2;
+    }
+    .section {
+      text-align: left;
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid #eee;
+    }
+    .section h2 {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+      color: #667eea;
+    }
+    .section p {
+      color: #666;
+      margin-bottom: 10px;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Random Quote API</h1>
+    <p class="subtitle">Get random quotes from Goodreads with a simple REST API</p>
+
+    <div class="links">
+      <a href="/api/docs" class="primary">📚 API Documentation</a>
+      <a href="https://github.com/pbgnz/random-quote-api" target="_blank">🔗 GitHub</a>
+    </div>
+
+    <div class="section">
+      <h2>Quick Start</h2>
+      <p>Fetch a random quote:</p>
+      <code style="background: #f5f5f5; padding: 10px; border-radius: 4px; display: block; margin: 10px 0;">
+        GET /api/v1/quotes/random
+      </code>
+      <p style="margin-top: 15px;">Get multiple quotes with an optional count parameter:</p>
+      <code style="background: #f5f5f5; padding: 10px; border-radius: 4px; display: block; margin: 10px 0;">
+        GET /api/v1/quotes?count=5
+      </code>
+      <p style="margin-top: 15px;">View full API documentation at <strong>/api/docs</strong></p>
+    </div>
+
+    <div class="section">
+      <h2>Features</h2>
+      <p>✓ Simple REST API • ✓ Request logging • ✓ Caching • ✓ Rate limiting • ✓ Health checks • ✓ Graceful shutdown</p>
+    </div>
+  </div>
+</body>
 </html>

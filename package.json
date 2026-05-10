@@ -1,6 +1,6 @@
 {
   "name": "random-quote-api",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "description": "get random quotes",
   "main": "server.js",
   "scripts": {
@@ -26,7 +26,8 @@
     "dotenv": "^17.4.2",
     "express": "^4.22.1",
     "express-rate-limit": "^8.4.1",
-    "helmet": "^8.1.0"
+    "helmet": "^8.1.0",
+    "js-yaml": "^4.1.1"
   },
   "devDependencies": {
     "jest": "^30.3.0",

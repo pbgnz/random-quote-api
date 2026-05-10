@@ -1,0 +1,161 @@
+openapi: 3.0.0
+info:
+  title: Random Quote API
+  description: A simple API that returns random quotes from Goodreads
+  version: 1.15.0
+  contact:
+    url: https://github.com/pbgnz/random-quote-api
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://random-quote-api.example.com
+    description: Production server (example)
+
+paths:
+  /api/v1/quotes:
+    get:
+      summary: Get quotes
+      description: Returns up to 30 random quotes from Goodreads
+      parameters:
+        - name: count
+          in: query
+          description: Number of quotes to return (1-30)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 30
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quotes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Quote'
+              example:
+                quotes:
+                  - id: 0
+                    quote: "The only way to do great work is to love what you do."
+                    author: "Steve Jobs"
+        '429':
+          description: Rate limit exceeded
+        '500':
+          description: Server error
+
+  /api/v1/quotes/random:
+    get:
+      summary: Get a single random quote
+      description: Returns a single random quote from Goodreads
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quote:
+                    $ref: '#/components/schemas/Quote'
+              example:
+                quote:
+                  id: 42
+                  quote: "Innovation distinguishes between a leader and a follower."
+                  author: "Steve Jobs"
+        '429':
+          description: Rate limit exceeded
+        '500':
+          description: Server error
+
+  /api/v1/cache/stats:
+    get:
+      summary: Get cache statistics
+      description: Returns cache hit/miss statistics and performance metrics
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hits:
+                    type: integer
+                    description: Number of cache hits
+                  misses:
+                    type: integer
+                    description: Number of cache misses
+                  expirations:
+                    type: integer
+                    description: Number of cache expirations
+                  hitRate:
+                    type: string
+                    description: Hit rate percentage
+                  cacheSize:
+                    type: integer
+                    description: Current number of cached pages
+              example:
+                hits: 42
+                misses: 8
+                expirations: 1
+                hitRate: "84.00%"
+                cacheSize: 3
+
+  /health:
+    get:
+      summary: Health check
+      description: Returns the health status of the API
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: ['ok']
+                  uptime:
+                    type: integer
+                    description: Seconds since server start
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp
+              example:
+                status: "ok"
+                uptime: 3600
+                timestamp: "2026-05-10T12:30:45.123Z"
+
+components:
+  schemas:
+    Quote:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique quote identifier
+        quote:
+          type: string
+          description: The quote text
+        author:
+          type: string
+          description: The author of the quote
+      required:
+        - id
+        - quote
+        - author
+
+tags:
+  - name: Quotes
+    description: Endpoints for retrieving quotes
+  - name: Cache
+    description: Cache management and statistics
+  - name: Health
+    description: API health monitoring

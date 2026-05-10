@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+const yaml = require('js-yaml');
 const cheerio = require('cheerio');
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
@@ -85,6 +87,18 @@ app.get('/api/v1/quotes', async (req, res) => {
 
 app.get('/api/v1/cache/stats', (req, res) => {
   res.json(cache.getStats());
+});
+
+// API Documentation
+app.get('/api/docs', (req, res) => {
+  try {
+    const openapiPath = path.join(__dirname, '..', 'openapi.yaml');
+    const openapiContent = fs.readFileSync(openapiPath, 'utf8');
+    const openapiSpec = yaml.load(openapiContent);
+    res.json(openapiSpec);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to load API documentation' });
+  }
 });
 
 // Backward compatibility: redirect old /api/* routes to /api/v1/*
