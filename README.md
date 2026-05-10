@@ -91,6 +91,28 @@ Returns the health status of the API, including uptime and current timestamp. Us
 | `uptime` | number | Seconds since server start |
 | `timestamp` | string | ISO 8601 timestamp of the health check |
 
+## Monitoring & Logging
+
+### Request Logging
+
+All API requests are logged in structured JSON format (NDJSON) with the following fields:
+
+- `timestamp`: ISO 8601 timestamp of the log entry
+- `level`: Log level (info for request logs)
+- `message`: "request"
+- `req_id`: Unique UUID for the request (useful for tracing)
+- `method`: HTTP method (GET, POST, etc.)
+- `path`: Request path
+- `status`: HTTP response status code
+- `duration_ms`: Request duration in milliseconds
+
+Example log output:
+```json
+{"timestamp":"2026-05-10T15:09:14.640Z","level":"info","message":"request","req_id":"550e8400-e29b-41d4-a716-446655440000","method":"GET","path":"/api/quotes","status":200,"duration_ms":42}
+```
+
+This structured logging makes it easy to parse logs with log aggregators, search by request ID for tracing, and monitor request performance.
+
 ## Dev
 
 ### Requirements:

@@ -10,10 +10,12 @@ const helmet = require('helmet');
 const QuotesCache = require('./cache/quotesCache');
 const logger = require('./utils/logger');
 const QuotesService = require('./services/quotesService');
+const requestLogger = require('./middleware/requestLogger');
 
 // Middleware
 app.use(helmet());
 app.use(compression());
+app.use(requestLogger);
 app.use(express.json());
 
 // Rate limiting
