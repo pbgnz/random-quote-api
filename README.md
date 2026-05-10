@@ -139,6 +139,30 @@ Example logs during graceful shutdown:
 
 This ensures that load balancers and orchestrators can safely remove instances from rotation without dropping in-flight requests.
 
+## Resilience Features
+
+### Retry with Exponential Backoff
+
+The API implements exponential backoff for HTTP retries when fetching quotes from Goodreads. When a request fails:
+
+1. **First retry**: Wait ~1 second before retrying (base delay × 2^0)
+2. **Second retry**: Wait ~2 seconds (base delay × 2^1)
+3. **Third retry**: Wait ~4 seconds (base delay × 2^2)
+4. And so on, up to the configured number of retries
+
+This approach prevents overwhelming a struggling upstream service and increases the likelihood of successful recovery.
+
+**Configuration**:
+- `SCRAPER_RETRIES` (default 2): Number of retry attempts
+- `SCRAPER_RETRY_DELAY_MS` (default 1000): Base delay in milliseconds for exponential backoff
+- `SCRAPER_TIMEOUT_MS` (default 15000): Timeout for each individual request
+
+Example: With default settings, if Goodreads is temporarily unavailable, the API will:
+1. Initial attempt (timeout: 15s)
+2. Wait 1s, then retry (timeout: 15s)
+3. Wait 2s, then retry (timeout: 15s)
+4. If still failing, return cached data or error
+
 ## Dev
 
 ### Requirements:

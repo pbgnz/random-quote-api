@@ -1,7 +1,8 @@
 const DEFAULT_TIMEOUT = parseInt(process.env.SCRAPER_TIMEOUT_MS) || 15000;
 const DEFAULT_RETRIES = parseInt(process.env.SCRAPER_RETRIES) || 2;
+const DEFAULT_RETRY_DELAY_MS = parseInt(process.env.SCRAPER_RETRY_DELAY_MS) || 1000;
 
-async function fetchWithRetry(url, options = {}, retries = DEFAULT_RETRIES) {
+async function fetchWithRetry(url, options = {}, retries = DEFAULT_RETRIES, attempt = 0) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT);
 
@@ -27,7 +28,9 @@ async function fetchWithRetry(url, options = {}, retries = DEFAULT_RETRIES) {
     clearTimeout(timeout);
 
     if (retries > 0) {
-      return fetchWithRetry(url, options, retries - 1);
+      const backoffDelay = DEFAULT_RETRY_DELAY_MS * Math.pow(2, attempt);
+      await new Promise((resolve) => setTimeout(resolve, backoffDelay));
+      return fetchWithRetry(url, options, retries - 1, attempt + 1);
     }
 
     throw err;
