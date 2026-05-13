@@ -184,7 +184,7 @@ paths:
   /metrics:
     get:
       summary: Application metrics
-      description: Returns runtime metrics. Defaults to JSON; send `Accept: text/plain` for Prometheus text format.
+      description: "Returns runtime metrics. Defaults to JSON; send Accept: text/plain for Prometheus text format."
       tags:
         - Monitoring
       responses:
