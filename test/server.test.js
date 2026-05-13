@@ -422,3 +422,41 @@ describe('GET /api/v1/quotes/random - ?page parameter', () => {
     expect(res.body.quote).toBeDefined();
   });
 });
+
+describe('GET /api/v1/quotes/daily', () => {
+  it('should return 200 with quote and date fields', async () => {
+    const res = await request(app).get('/api/v1/quotes/daily').expect('Content-Type', /json/).expect(200);
+    expect(res.body.quote).toBeDefined();
+    expect(res.body.date).toBeDefined();
+  });
+
+  it('should return a quote with id, quote, and author fields', async () => {
+    const res = await request(app).get('/api/v1/quotes/daily').expect(200);
+    expect(res.body.quote.id).toBeDefined();
+    expect(res.body.quote.quote).toBeTruthy();
+    expect(res.body.quote.author).toBeTruthy();
+  });
+
+  it('should return a date matching YYYY-MM-DD format', async () => {
+    const res = await request(app).get('/api/v1/quotes/daily').expect(200);
+    expect(res.body.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it('should return today\'s UTC date', async () => {
+    const res = await request(app).get('/api/v1/quotes/daily').expect(200);
+    const today = new Date().toISOString().slice(0, 10);
+    expect(res.body.date).toBe(today);
+  });
+
+  it('should return the same quote on successive calls (deterministic)', async () => {
+    const res1 = await request(app).get('/api/v1/quotes/daily').expect(200);
+    const res2 = await request(app).get('/api/v1/quotes/daily').expect(200);
+    expect(res1.body.quote.id).toBe(res2.body.quote.id);
+    expect(res1.body.date).toBe(res2.body.date);
+  });
+
+  it('should not return a quotes array field', async () => {
+    const res = await request(app).get('/api/v1/quotes/daily').expect(200);
+    expect(res.body.quotes).toBeUndefined();
+  });
+});

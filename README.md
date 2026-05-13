@@ -28,6 +28,7 @@ npm test
 |--------|----------|-------------|
 | GET | `/api/v1/quotes` | Get up to 30 random quotes (supports `?count=N` and `?page=N` parameters) |
 | GET | `/api/v1/quotes/random` | Get a single random quote (supports `?page=N` parameter) |
+| GET | `/api/v1/quotes/daily` | Get the quote of the day (deterministic, UTC-based) |
 | GET | `/api/v1/cache/stats` | View cache hit/miss statistics |
 | GET | `/health` | Health check for monitoring |
 
@@ -39,6 +40,9 @@ curl http://localhost:8000/api/v1/quotes?count=5
 
 # Get quotes from a specific page
 curl http://localhost:8000/api/v1/quotes?page=5
+
+# Get today's quote of the day (same quote all day, UTC-based)
+curl http://localhost:8000/api/v1/quotes/daily
 
 # Get a single quote
 curl http://localhost:8000/api/v1/quotes/random

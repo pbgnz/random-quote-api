@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Random Quote API
   description: A simple API that returns random quotes from Goodreads
-  version: 1.22.0
+  version: 1.23.0
   contact:
     url: https://github.com/pbgnz/random-quote-api
 
@@ -51,6 +51,37 @@ paths:
                   - id: 0
                     quote: "The only way to do great work is to love what you do."
                     author: "Steve Jobs"
+        '429':
+          description: Rate limit exceeded
+        '500':
+          description: Server error
+
+  /api/v1/quotes/daily:
+    get:
+      summary: Get the quote of the day
+      description: Returns a deterministic quote based on the current UTC date. The same quote is returned for all requests on the same day.
+      tags:
+        - Quotes
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quote:
+                    $ref: '#/components/schemas/Quote'
+                  date:
+                    type: string
+                    format: date
+                    description: UTC date for which this quote was selected (YYYY-MM-DD)
+              example:
+                quote:
+                  id: 42
+                  quote: "In the middle of difficulty lies opportunity."
+                  author: "Albert Einstein"
+                date: "2026-05-12"
         '429':
           description: Rate limit exceeded
         '500':

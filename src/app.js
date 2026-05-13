@@ -64,6 +64,21 @@ app.get('/health', (req, res) => {
 });
 
 // API v1 Routes
+app.get('/api/v1/quotes/daily', async (req, res) => {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const hash = (today.split('').reduce((acc, ch) => acc * 31 + ch.charCodeAt(0), 0)) >>> 0;
+    const pageNumber = (hash % quotesService.maxPage) + 1;
+    const result = await quotesService.getQuotes({ page: pageNumber });
+    const quotes = result.quotes;
+    if (!quotes.length) throw new Error('No quotes available');
+    const quote = quotes[hash % quotes.length];
+    res.json({ quote, date: today });
+  } catch (err) {
+    res.status(500).json({ message: 'Error getting quote of the day' });
+  }
+});
+
 app.get('/api/v1/quotes/random', async (req, res) => {
   try {
     const page = req.query.page !== undefined ? parseInt(req.query.page, 10) : undefined;
