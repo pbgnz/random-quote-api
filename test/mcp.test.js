@@ -150,6 +150,8 @@ describe('MCP Server', () => {
     expect(quote.id).toBeDefined();
     expect(quote.quote).toBeDefined();
     expect(quote.author).toBeDefined();
+    expect(quote).toHaveProperty('bookTitle');
+    expect(Array.isArray(quote.tags)).toBe(true);
   });
 
   it('should handle tools/call for get_quotes', async () => {
@@ -172,6 +174,8 @@ describe('MCP Server', () => {
       expect(q.id).toBeDefined();
       expect(q.quote).toBeDefined();
       expect(q.author).toBeDefined();
+      expect(q).toHaveProperty('bookTitle');
+      expect(Array.isArray(q.tags)).toBe(true);
     });
   });
 

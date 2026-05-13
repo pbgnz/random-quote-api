@@ -4,14 +4,14 @@ const request = require('supertest');
 jest.mock('../src/scraper/goodreadsScraper', () => {
   const mockQuotes = {
     1: [
-      { id: 0, quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-      { id: 1, quote: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
-      { id: 2, quote: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+      { id: 0, quote: "The only way to do great work is to love what you do.", author: "Steve Jobs", bookTitle: null, tags: ["work", "inspiration"] },
+      { id: 1, quote: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs", bookTitle: null, tags: ["innovation"] },
+      { id: 2, quote: "Life is what happens when you're busy making other plans.", author: "John Lennon", bookTitle: "Beautiful Boy", tags: ["life"] },
     ],
     2: [
-      { id: 30, quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
-      { id: 31, quote: "Don't let yesterday take up too much of today.", author: "Will Rogers" },
-      { id: 32, quote: "You learn more from failure than from success.", author: "Unknown" },
+      { id: 30, quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney", bookTitle: null, tags: ["action"] },
+      { id: 31, quote: "Don't let yesterday take up too much of today.", author: "Will Rogers", bookTitle: null, tags: [] },
+      { id: 32, quote: "You learn more from failure than from success.", author: "Unknown", bookTitle: null, tags: ["learning"] },
     ],
   };
 
@@ -23,7 +23,9 @@ jest.mock('../src/scraper/goodreadsScraper', () => {
     return Array.from({ length: 5 }, (_, i) => ({
       id: baseId + i,
       quote: `Quote ${baseId + i}`,
-      author: `Author ${pageNumber}`
+      author: `Author ${pageNumber}`,
+      bookTitle: null,
+      tags: [],
     }));
   };
 
@@ -51,17 +53,20 @@ describe("the responses from the quotes api (v1)", () => {
         expect(response.body.quotes.length).toBeLessThanOrEqual(30);
     });
 
-    it('should contain the proper fields of id, author, quote', async () => {
+    it('should contain the proper fields of id, author, quote, bookTitle, and tags', async () => {
         const response = await request(app)
             .get('/api/v1/quotes')
             .send()
             .expect(200);
 
         const randomIndex = Math.floor(Math.random() * response.body.quotes.length);
+        const q = response.body.quotes[randomIndex];
 
-        expect(response.body.quotes[randomIndex].id).toBeTruthy();
-        expect(response.body.quotes[randomIndex].author).toBeTruthy();
-        expect(response.body.quotes[randomIndex].quote).toBeTruthy();
+        expect(q.id).toBeTruthy();
+        expect(q.author).toBeTruthy();
+        expect(q.quote).toBeTruthy();
+        expect(q).toHaveProperty('bookTitle');
+        expect(Array.isArray(q.tags)).toBe(true);
     });
 
     it('should contain different quotes in the response', async () => {
@@ -185,6 +190,8 @@ describe("GET /api/quotes/random", () => {
         expect(response.body.quote.id).toBeGreaterThanOrEqual(0);
         expect(response.body.quote.author).toBeTruthy();
         expect(response.body.quote.quote).toBeTruthy();
+        expect(response.body.quote).toHaveProperty('bookTitle');
+        expect(Array.isArray(response.body.quote.tags)).toBe(true);
     });
 
     it('should not return a quotes array', async () => {
@@ -302,6 +309,8 @@ describe("API v1 Routes", () => {
         expect(response.body.quote.id).toBeGreaterThanOrEqual(0);
         expect(response.body.quote.author).toBeTruthy();
         expect(response.body.quote.quote).toBeTruthy();
+        expect(response.body.quote).toHaveProperty('bookTitle');
+        expect(Array.isArray(response.body.quote.tags)).toBe(true);
     });
 
     it('GET /api/v1/cache/stats should return cache statistics', async () => {
@@ -430,11 +439,13 @@ describe('GET /api/v1/quotes/daily', () => {
     expect(res.body.date).toBeDefined();
   });
 
-  it('should return a quote with id, quote, and author fields', async () => {
+  it('should return a quote with id, quote, author, bookTitle, and tags fields', async () => {
     const res = await request(app).get('/api/v1/quotes/daily').expect(200);
     expect(res.body.quote.id).toBeDefined();
     expect(res.body.quote.quote).toBeTruthy();
     expect(res.body.quote.author).toBeTruthy();
+    expect(res.body.quote).toHaveProperty('bookTitle');
+    expect(Array.isArray(res.body.quote.tags)).toBe(true);
   });
 
   it('should return a date matching YYYY-MM-DD format', async () => {

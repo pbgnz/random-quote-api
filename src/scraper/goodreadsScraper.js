@@ -11,28 +11,33 @@ async function scrapeQuotes(pageNumber, logger) {
 
   const quotes = [];
 
-  $('div.quoteText').each((index, el) => {
-    const rawText = $(el).text();
+  $('div.quoteDetails').each((index, container) => {
+    const el = $(container);
 
-    const quoteText = rawText.split('―')[0]?.trim();
-
+    const quoteText = el.find('div.quoteText').text().split('―')[0]?.trim();
     if (!quoteText) return;
+
+    const author = el.find('div.quoteText > span.authorOrTitle').text().trim().replace(/,$/, '');
+    if (!author) return;
+
+    const titleEl = el.find('span[id^="quote_book_link_"] a');
+    const bookTitle = titleEl.length ? titleEl.text().trim() : null;
+
+    const tags = [];
+    el.find('div.quoteFooter .greyText.smallText a').each((_, tagEl) => {
+      const tag = $(tagEl).text().trim();
+      if (tag) tags.push(tag);
+    });
 
     quotes.push({
       id: ((pageNumber - 1) * 30) + index,
-      quote: quoteText
+      quote: quoteText,
+      author,
+      bookTitle,
+      tags,
     });
   });
 
-  $('span.authorOrTitle').each((index, el) => {
-    if (!quotes[index]) return;
-
-    const author = $(el).text().trim().replace(/,$/, '');
-
-    quotes[index].author = author;
-  });
-
-  // Clean invalid entries
   return quotes.filter(q => q.quote && q.author);
 }
 

@@ -51,6 +51,8 @@ paths:
                   - id: 0
                     quote: "The only way to do great work is to love what you do."
                     author: "Steve Jobs"
+                    bookTitle: null
+                    tags: ["work", "inspiration"]
         '429':
           description: Rate limit exceeded
         '500':
@@ -81,6 +83,8 @@ paths:
                   id: 42
                   quote: "In the middle of difficulty lies opportunity."
                   author: "Albert Einstein"
+                  bookTitle: null
+                  tags: ["difficulty", "opportunity"]
                 date: "2026-05-12"
         '429':
           description: Rate limit exceeded
@@ -115,6 +119,8 @@ paths:
                   id: 42
                   quote: "Innovation distinguishes between a leader and a follower."
                   author: "Steve Jobs"
+                  bookTitle: null
+                  tags: ["innovation", "leadership"]
         '429':
           description: Rate limit exceeded
         '500':
@@ -242,10 +248,21 @@ components:
         author:
           type: string
           description: The author of the quote
+        bookTitle:
+          type: string
+          nullable: true
+          description: Title of the book the quote is from, or null for standalone quotes
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tag labels associated with the quote (e.g. "inspiration", "love")
       required:
         - id
         - quote
         - author
+        - bookTitle
+        - tags
 
 tags:
   - name: Quotes
