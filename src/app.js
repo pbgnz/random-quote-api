@@ -16,7 +16,20 @@ const requestLogger = require('./middleware/requestLogger');
 const metricsCollector = require('./utils/metricsCollector');
 
 // Middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
+      imgSrc: ["'self'", 'data:', 'https:'],
+      fontSrc: ["'self'", 'https:', 'data:'],
+      connectSrc: ["'self'", 'https:'],
+      objectSrc: ["'none'"],
+      frameAncestors: ["'self'"],
+    }
+  }
+}));
 app.use(compression());
 app.use(requestLogger);
 app.use(express.json());
