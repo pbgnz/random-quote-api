@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Random Quote API
   description: A simple API that returns random quotes from Goodreads
-  version: 1.15.0
+  version: 1.22.0
   contact:
     url: https://github.com/pbgnz/random-quote-api
 
@@ -26,6 +26,14 @@ paths:
             type: integer
             minimum: 1
             maximum: 30
+        - name: page
+          in: query
+          description: Specific Goodreads page to fetch (1-100). Falls back to a random page if omitted or invalid.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
       responses:
         '200':
           description: Success
@@ -52,6 +60,15 @@ paths:
     get:
       summary: Get a single random quote
       description: Returns a single random quote from Goodreads
+      parameters:
+        - name: page
+          in: query
+          description: Specific Goodreads page to fetch (1-100). Falls back to a random page if omitted or invalid.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
       responses:
         '200':
           description: Success

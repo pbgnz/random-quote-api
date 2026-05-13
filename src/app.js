@@ -66,7 +66,8 @@ app.get('/health', (req, res) => {
 // API v1 Routes
 app.get('/api/v1/quotes/random', async (req, res) => {
   try {
-    const result = await quotesService.getQuotes();
+    const page = req.query.page !== undefined ? parseInt(req.query.page, 10) : undefined;
+    const result = await quotesService.getQuotes({ page });
     const quote = result.quotes[Math.floor(Math.random() * result.quotes.length)];
     res.json({ quote });
   } catch (err) {
@@ -78,7 +79,8 @@ app.get('/api/v1/quotes', async (req, res) => {
   try {
     const count = req.query.count !== undefined ? parseInt(req.query.count, 10) : undefined;
     const validCount = Number.isInteger(count) && count >= 1 && count <= 30 ? count : undefined;
-    const result = await quotesService.getQuotes({ count: validCount });
+    const page = req.query.page !== undefined ? parseInt(req.query.page, 10) : undefined;
+    const result = await quotesService.getQuotes({ count: validCount, page });
     res.json(result);
   } catch (err) {
     res.status(500).json({ message: 'Error getting quotes' });
