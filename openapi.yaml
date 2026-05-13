@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Random Quote API
   description: A simple API that returns random quotes from Goodreads
-  version: 1.24.0
+  version: 1.25.0
   contact:
     url: https://github.com/pbgnz/random-quote-api
 
@@ -184,13 +184,20 @@ paths:
   /metrics:
     get:
       summary: Application metrics
-      description: Returns runtime metrics including request counts, error rates, uptime, and cache statistics.
+      description: Returns runtime metrics. Defaults to JSON; send `Accept: text/plain` for Prometheus text format.
       tags:
         - Monitoring
       responses:
         '200':
           description: Metrics data
           content:
+            text/plain:
+              schema:
+                type: string
+              example: |
+                # HELP requests_total Total HTTP requests received
+                # TYPE requests_total counter
+                requests_total 456
             application/json:
               schema:
                 type: object

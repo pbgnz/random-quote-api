@@ -67,6 +67,35 @@ app.get('/health', (req, res) => {
 app.get('/metrics', (req, res) => {
   const data = metricsCollector.getMetrics();
   const cacheStats = cache.getStats();
+
+  if ((req.headers['accept'] || '').includes('text/plain')) {
+    const lines = [
+      '# HELP requests_total Total HTTP requests received',
+      '# TYPE requests_total counter',
+      `requests_total ${data.requests_total}`,
+      '# HELP errors_total Total HTTP 5xx errors',
+      '# TYPE errors_total counter',
+      `errors_total ${data.errors_total}`,
+      '# HELP uptime_seconds Server uptime in seconds',
+      '# TYPE uptime_seconds gauge',
+      `uptime_seconds ${data.uptime_seconds}`,
+      '# HELP cache_hits_total Total cache hits',
+      '# TYPE cache_hits_total counter',
+      `cache_hits_total ${cacheStats.hits}`,
+      '# HELP cache_misses_total Total cache misses',
+      '# TYPE cache_misses_total counter',
+      `cache_misses_total ${cacheStats.misses}`,
+      '# HELP cache_size Number of cached pages',
+      '# TYPE cache_size gauge',
+      `cache_size ${cacheStats.cacheSize}`,
+    ];
+    for (const [path, count] of Object.entries(data.requests_by_path)) {
+      lines.push(`requests_by_path{path="${path}"} ${count}`);
+    }
+    res.setHeader('Content-Type', 'text/plain; version=0.0.4; charset=utf-8');
+    return res.send(lines.join('\n') + '\n');
+  }
+
   res.json({
     ...data,
     cache: {

@@ -182,7 +182,7 @@ describe("GET /api/quotes/random", () => {
             .expect(200);
 
         expect(response.body.quote).toBeDefined();
-        expect(response.body.quote.id).toBeTruthy();
+        expect(response.body.quote.id).toBeGreaterThanOrEqual(0);
         expect(response.body.quote.author).toBeTruthy();
         expect(response.body.quote.quote).toBeTruthy();
     });
@@ -299,7 +299,7 @@ describe("API v1 Routes", () => {
             .expect(200);
 
         expect(response.body.quote).toBeDefined();
-        expect(response.body.quote.id).toBeTruthy();
+        expect(response.body.quote.id).toBeGreaterThanOrEqual(0);
         expect(response.body.quote.author).toBeTruthy();
         expect(response.body.quote.quote).toBeTruthy();
     });
