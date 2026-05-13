@@ -13,6 +13,7 @@ const QuotesCache = require('./cache/quotesCache');
 const logger = require('./utils/logger');
 const QuotesService = require('./services/quotesService');
 const requestLogger = require('./middleware/requestLogger');
+const metricsCollector = require('./utils/metricsCollector');
 
 // Middleware
 app.use(helmet());
@@ -60,6 +61,20 @@ app.get('/health', (req, res) => {
     status: 'ok',
     uptime,
     timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/metrics', (req, res) => {
+  const data = metricsCollector.getMetrics();
+  const cacheStats = cache.getStats();
+  res.json({
+    ...data,
+    cache: {
+      hits: cacheStats.hits,
+      misses: cacheStats.misses,
+      hitRate: cacheStats.hitRate,
+      cacheSize: cacheStats.cacheSize,
+    }
   });
 });
 

@@ -31,6 +31,7 @@ npm test
 | GET | `/api/v1/quotes/daily` | Get the quote of the day (deterministic, UTC-based) |
 | GET | `/api/v1/cache/stats` | View cache hit/miss statistics |
 | GET | `/health` | Health check for monitoring |
+| GET | `/metrics` | Application metrics (JSON) |
 
 ### Example Requests
 
@@ -52,6 +53,9 @@ curl http://localhost:8000/api/v1/quotes/random?page=5
 
 # Check API health
 curl http://localhost:8000/health
+
+# Get application metrics
+curl http://localhost:8000/metrics
 ```
 
 ## Features
@@ -63,6 +67,7 @@ curl http://localhost:8000/health
 - **Retry Backoff**: Exponential backoff (1s, 2s, 4s...) when Goodreads is unavailable
 - **Graceful Shutdown**: Clean shutdown on SIGTERM/SIGINT signals
 - **Health Checks**: `/health` endpoint for load balancers and k8s probes
+- **Metrics**: Request counts, errors, and cache statistics at `/metrics`
 - **CORS**: Configurable cross-origin requests
 - **MCP Integration**: Standalone MCP server for AI assistants (Claude Desktop, Claude Code)
 
