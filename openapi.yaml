@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Random Quote API
   description: A simple API that returns random quotes from Goodreads
-  version: 1.15.0
+  version: 1.24.0
   contact:
     url: https://github.com/pbgnz/random-quote-api
 
@@ -133,6 +133,46 @@ paths:
                 uptime: 3600
                 timestamp: "2026-05-10T12:30:45.123Z"
 
+  /metrics:
+    get:
+      summary: Application metrics
+      description: Returns runtime metrics including request counts, error rates, uptime, and cache statistics.
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: Metrics data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uptime_seconds:
+                    type: integer
+                    description: Server uptime in seconds
+                  requests_total:
+                    type: integer
+                    description: Total requests received
+                  requests_by_path:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                    description: Request counts per path
+                  errors_total:
+                    type: integer
+                    description: Total 5xx errors
+                  cache:
+                    type: object
+                    properties:
+                      hits:
+                        type: integer
+                      misses:
+                        type: integer
+                      hitRate:
+                        type: string
+                      cacheSize:
+                        type: integer
+
 components:
   schemas:
     Quote:
@@ -159,3 +199,5 @@ tags:
     description: Cache management and statistics
   - name: Health
     description: API health monitoring
+  - name: Monitoring
+    description: Application health and metrics
