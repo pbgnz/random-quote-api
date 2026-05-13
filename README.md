@@ -20,7 +20,7 @@ npm test
 
 ## API Documentation
 
-**Full API documentation is available at:** `/api/docs`
+**Interactive API docs (Scalar):** `/docs` | **OpenAPI spec (JSON):** `/api/docs`
 
 ### Endpoints
 

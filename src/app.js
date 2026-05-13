@@ -162,6 +162,25 @@ app.get('/api/docs', (req, res) => {
   }
 });
 
+// Interactive API docs (Scalar UI)
+app.get('/docs', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.send(`<!doctype html>
+<html>
+  <head>
+    <title>Random Quote API Docs</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <script
+      id="api-reference"
+      data-url="/api/docs"
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+  </body>
+</html>`);
+});
+
 // Backward compatibility: redirect old /api/* routes to /api/v1/*
 app.get('/api/quotes/random', (req, res) => {
   res.redirect(301, '/api/v1/quotes/random');
