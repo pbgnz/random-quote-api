@@ -7,8 +7,11 @@ class QuotesService {
     this.maxPage = parseInt(process.env.SCRAPER_MAX_PAGE) || 100;
   }
 
-  async getQuotes({ count } = {}) {
-    const pageNumber = Math.floor(Math.random() * this.maxPage) + 1;
+  async getQuotes({ count, page } = {}) {
+    const validPage = (Number.isInteger(page) && page >= 1 && page <= this.maxPage)
+      ? page
+      : Math.floor(Math.random() * this.maxPage) + 1;
+    const pageNumber = validPage;
 
     const cached = this.cache.get(pageNumber);
     if (cached) {

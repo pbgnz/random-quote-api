@@ -370,3 +370,55 @@ describe("Backward Compatibility - API Redirects", () => {
         expect(response.body.quote).toBeDefined();
     });
 });
+
+describe('GET /api/v1/quotes - ?page parameter', () => {
+  it('should return quotes from page 1 when page=1 is specified', async () => {
+    const res = await request(app).get('/api/v1/quotes?page=1').expect(200);
+    expect(res.body.quotes).toBeDefined();
+    expect(res.body.quotes.length).toBeGreaterThan(0);
+    res.body.quotes.forEach(q => expect(q.id).toBeLessThan(30));
+  });
+
+  it('should return quotes from page 2 when page=2 is specified', async () => {
+    const res = await request(app).get('/api/v1/quotes?page=2').expect(200);
+    res.body.quotes.forEach(q => {
+      expect(q.id).toBeGreaterThanOrEqual(30);
+      expect(q.id).toBeLessThan(60);
+    });
+  });
+
+  it('should ignore page=0 and return quotes from a random page', async () => {
+    const res = await request(app).get('/api/v1/quotes?page=0').expect(200);
+    expect(res.body.quotes.length).toBeGreaterThan(0);
+  });
+
+  it('should ignore non-integer page and return quotes from a random page', async () => {
+    const res = await request(app).get('/api/v1/quotes?page=abc').expect(200);
+    expect(res.body.quotes.length).toBeGreaterThan(0);
+  });
+
+  it('should honor both page and count params together', async () => {
+    const res = await request(app).get('/api/v1/quotes?page=1&count=2').expect(200);
+    expect(res.body.quotes).toHaveLength(2);
+    res.body.quotes.forEach(q => expect(q.id).toBeLessThan(30));
+  });
+});
+
+describe('GET /api/v1/quotes/random - ?page parameter', () => {
+  it('should return a quote from page 1 when page=1 is specified', async () => {
+    const res = await request(app).get('/api/v1/quotes/random?page=1').expect(200);
+    expect(res.body.quote).toBeDefined();
+    expect(res.body.quote.id).toBeLessThan(30);
+  });
+
+  it('should return a quote from page 2 when page=2 is specified', async () => {
+    const res = await request(app).get('/api/v1/quotes/random?page=2').expect(200);
+    expect(res.body.quote.id).toBeGreaterThanOrEqual(30);
+    expect(res.body.quote.id).toBeLessThan(60);
+  });
+
+  it('should ignore invalid page and return any quote', async () => {
+    const res = await request(app).get('/api/v1/quotes/random?page=999999').expect(200);
+    expect(res.body.quote).toBeDefined();
+  });
+});

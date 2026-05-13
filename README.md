@@ -26,8 +26,8 @@ npm test
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/v1/quotes` | Get up to 30 random quotes (supports `?count=N` parameter) |
-| GET | `/api/v1/quotes/random` | Get a single random quote |
+| GET | `/api/v1/quotes` | Get up to 30 random quotes (supports `?count=N` and `?page=N` parameters) |
+| GET | `/api/v1/quotes/random` | Get a single random quote (supports `?page=N` parameter) |
 | GET | `/api/v1/cache/stats` | View cache hit/miss statistics |
 | GET | `/health` | Health check for monitoring |
 
@@ -37,8 +37,14 @@ npm test
 # Get 5 random quotes
 curl http://localhost:8000/api/v1/quotes?count=5
 
+# Get quotes from a specific page
+curl http://localhost:8000/api/v1/quotes?page=5
+
 # Get a single quote
 curl http://localhost:8000/api/v1/quotes/random
+
+# Get a random quote from a specific page
+curl http://localhost:8000/api/v1/quotes/random?page=5
 
 # Check API health
 curl http://localhost:8000/health
