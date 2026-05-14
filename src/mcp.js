@@ -44,6 +44,29 @@ const tools = {
       required: [],
     },
   },
+  get_daily_quote: {
+    description: 'Get the quote of the day (deterministic based on UTC date)',
+    inputSchema: {
+      type: 'object',
+      properties: {},
+      required: [],
+    },
+  },
+  get_quote_by_page: {
+    description: 'Get a random quote from a specific Goodreads page',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        page: {
+          type: 'integer',
+          description: 'Goodreads page number (1-100)',
+          minimum: 1,
+          maximum: 100,
+        },
+      },
+      required: ['page'],
+    },
+  },
 };
 
 // Tool handlers
@@ -80,6 +103,47 @@ const toolHandlers = {
         {
           type: 'text',
           text: JSON.stringify(stats, null, 2),
+        },
+      ],
+    };
+  },
+
+  async get_daily_quote() {
+    const today = new Date().toISOString().slice(0, 10);
+    const hash = (today.split('').reduce((acc, ch) => acc * 31 + ch.charCodeAt(0), 0)) >>> 0;
+    const pageNumber = (hash % service.maxPage) + 1;
+    const result = await service.getQuotes({ page: pageNumber });
+    const quotes = result.quotes;
+    if (!quotes.length) throw new Error('No quotes available');
+    const quote = quotes[hash % quotes.length];
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify({ quote, date: today }, null, 2),
+        },
+      ],
+    };
+  },
+
+  async get_quote_by_page({ page } = {}) {
+    if (!page || page < 1 || page > 100) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({ error: 'Invalid page number (1-100)' }),
+          },
+        ],
+      };
+    }
+    const { quotes } = await service.getQuotes({ page });
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify(quote, null, 2),
         },
       ],
     };

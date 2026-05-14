@@ -83,12 +83,14 @@ describe('MCP Server', () => {
     expect(responses).toHaveLength(1);
     const response = responses[0];
     expect(response.result.tools).toBeDefined();
-    expect(response.result.tools).toHaveLength(3);
+    expect(response.result.tools).toHaveLength(5);
 
     const toolNames = response.result.tools.map((t) => t.name);
     expect(toolNames).toContain('get_random_quote');
     expect(toolNames).toContain('get_quotes');
     expect(toolNames).toContain('get_cache_stats');
+    expect(toolNames).toContain('get_daily_quote');
+    expect(toolNames).toContain('get_quote_by_page');
   });
 
   it('should include descriptions for all tools', async () => {
@@ -244,5 +246,53 @@ describe('MCP Server', () => {
     expect(responses[0].id).toBe(10);
     expect(responses[1].id).toBe(11);
     expect(responses[2].id).toBe(12);
+  });
+
+  it('should handle tools/call for get_daily_quote', async () => {
+    const responses = await sendMcpRequest({
+      jsonrpc: '2.0',
+      id: 13,
+      method: 'tools/call',
+      params: {
+        name: 'get_daily_quote',
+        arguments: {},
+      },
+    });
+
+    expect(responses).toHaveLength(1);
+    const response = responses[0];
+    expect(response.result.content).toBeDefined();
+    expect(response.result.content).toHaveLength(1);
+
+    const data = JSON.parse(response.result.content[0].text);
+    expect(data.quote).toBeDefined();
+    expect(data.quote.id).toBeDefined();
+    expect(data.quote.quote).toBeDefined();
+    expect(data.quote.author).toBeDefined();
+    expect(data.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it('should handle tools/call for get_quote_by_page', async () => {
+    const responses = await sendMcpRequest({
+      jsonrpc: '2.0',
+      id: 14,
+      method: 'tools/call',
+      params: {
+        name: 'get_quote_by_page',
+        arguments: { page: 1 },
+      },
+    });
+
+    expect(responses).toHaveLength(1);
+    const response = responses[0];
+    expect(response.result.content).toBeDefined();
+    expect(response.result.content).toHaveLength(1);
+
+    const quote = JSON.parse(response.result.content[0].text);
+    expect(quote.id).toBeDefined();
+    expect(quote.quote).toBeDefined();
+    expect(quote.author).toBeDefined();
+    expect(quote).toHaveProperty('bookTitle');
+    expect(Array.isArray(quote.tags)).toBe(true);
   });
 });
