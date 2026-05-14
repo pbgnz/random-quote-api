@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Random Quote API
   description: A simple API that returns random quotes from Goodreads
-  version: 1.25.0
+  version: 1.27.0
   contact:
     url: https://github.com/pbgnz/random-quote-api
 
