@@ -31,7 +31,7 @@
     "js-yaml": "^5.4.2"
   },
   "devDependencies": {
-    "jest": "^30.5.1",
+    "jest": "^30.5.2",
     "supertest": "^7.1.4"
   }
 }
